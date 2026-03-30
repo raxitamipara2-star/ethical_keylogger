@@ -1,0 +1,58 @@
+## Project Report: Ethical Keylogger Proof of Concept
+
+[cite_start]This report outlines the development and functionality of the **Ethical Keylogger**, an educational tool designed to demonstrate cybersecurity concepts including input monitoring, data encryption, and simulated exfiltration[cite: 4].
+
+---
+
+### 1. Project Overview
+The goal of this project is to provide a functional, transparent, and ethical demonstration of how keyloggers operate. [cite_start]It highlights the technical mechanisms used by both security researchers and malicious actors to capture sensitive data[cite: 4].
+
+* [cite_start]**Core Language:** Python 3.x[cite: 5].
+* [cite_start]**Primary Libraries:** `pynput` (keystroke monitoring), `cryptography` (Fernet/AES-128 encryption), and `Flask` (mock server)[cite: 5].
+* [cite_start]**Ethical Constraints:** The tool is restricted to local simulation and includes a "Kill Switch" mechanism to immediately cease operations[cite: 1, 4].
+
+---
+
+### 2. Technical Architecture
+The project is divided into a client-side logger and a server-side receiver.
+
+#### Client-Side Components (`main.py`)
+* [cite_start]**Keystroke Listener:** Uses `pynput.keyboard` to capture real-time user input and append it to `keystrokes.log`[cite: 1].
+* [cite_start]**Encryption Engine:** Automatically encrypts captured logs every 30 seconds using **Fernet (AES-128)** to ensure data remains secure during transit[cite: 1, 4].
+* [cite_start]**Persistence Mechanism:** Contains code to simulate "Startup Persistence" on Windows and Linux, demonstrating how malware maintains access after a reboot[cite: 1].
+
+#### Server-Side Components (`server.py`)
+* [cite_start]**Mock Endpoint:** A Flask-based server running on `localhost:8080` that receives incoming encrypted data packets[cite: 1].
+* [cite_start]**Traffic Logging:** Records the size and timestamp of every incoming "exfiltration" attempt in `server_logs/received_logs.json`[cite: 1].
+
+---
+
+### 3. Data Analysis & Log Evidence
+Based on the provided project files, the following activity was recorded during the testing phase:
+
+**A. Capture Log (`keystrokes.log`):**
+The logger successfully captured information regarding various Kali Linux tools, including:
+* [cite_start]**Information Gathering:** `whois`, `sherlock`, and `theHarvester`[cite: 2].
+* [cite_start]**Credential Auditing:** `leakcheck` and `have i been pwned`[cite: 2].
+* [cite_start]**Brute-Force:** A `crunch` command was used to generate password lists[cite: 3].
+
+**B. Exfiltration Log (`exfiltration_log.json`):**
+[cite_start]The system successfully simulated 12 data transmissions to the local server[cite: 1].
+| Initial Data Size | Final Data Size (Stabilized) |
+| :--- | :--- |
+| 312 bytes | 6,604 bytes |
+
+[cite_start]The increase in data size indicates the continuous accumulation of keystroke data over time before the process was stopped[cite: 1].
+
+---
+
+### 4. Security & Ethical Features
+To prevent misuse, the project includes several safety guardrails:
+1.  **Kill Switch:** The program checks for the existence of `STOP_KEYLOGGER.txt`. [cite_start]If found, the script terminates immediately[cite: 1].
+2.  [cite_start]**Encrypted Storage:** Raw logs are transformed into `encrypted_keystrokes.enc`, making them unreadable without the specific key stored in `keylogger_config.json`[cite: 1].
+3.  [cite_start]**Local Scope:** The exfiltration is hardcoded to `localhost`, ensuring no data leaves the host machine[cite: 1, 4].
+
+---
+
+### 5. Conclusion
+The **Ethical Keylogger** project successfully demonstrates the full lifecycle of a monitoring tool within a controlled environment. It serves as a practical example of why endpoint security and encryption are critical in modern computing.
